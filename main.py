@@ -693,7 +693,6 @@ class App(TkinterDnD.Tk):
         }
         file_list_states[file_list] = widgets_frame
 
-
         def toggle_button():
             nonlocal bt_run
             state = process_states[file_list]
