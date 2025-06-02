@@ -21,21 +21,19 @@ cursor = conn.cursor()
 process_states = {}
 file_list_states = {}
 
-# Функция для получения пути к ресурсам
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
-        # Путь, где PyInstaller хранит временные файлы
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
-logo = resource_path("logo.png")
+logo = resource_path("resources/logo/logo.png")
 style_tcl = resource_path("style.tcl")
 forest_dark_path = resource_path("forest-dark")
 
 class App(TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
-        self.title("FFmpeg Converter")
+        self.title("FFbroadcastConverter")
         self.conn, self.cursor = self.create_db_connection()
         self.setup_style()
 
@@ -696,7 +694,6 @@ class App(TkinterDnD.Tk):
         def toggle_button():
             nonlocal bt_run
             state = process_states[file_list]
-            print(state)
 
             # Проверка, если процесс уже запущен
             if state['is_running'] and bt_run.cget("text") == "Запустить":
@@ -704,14 +701,14 @@ class App(TkinterDnD.Tk):
                 return
 
             if bt_run.cget("text") == "Запустить":
-                bt_run.config(text='Стоп', style='Danger.TButton')
+                bt_run.config(text='Stop', style='Danger.TButton')
                 state['stop_event'].clear()
                 state['process_handles'] = []
                 state['is_running'] = True  # Устанавливаем флаг запуска
                 threading.Thread(target=self.process_files, args=(file_list, state)).start()
                 state['is_running'] = False 
             else:
-                bt_run.config(text='Запустить', style='Accent.TButton')
+                bt_run.config(text='Start', style='Accent.TButton')
                 state['stop_event'].set()
                 # Останавливаем все запущенные процессы
                 for p in state['process_handles']:
@@ -960,9 +957,9 @@ class App(TkinterDnD.Tk):
         file_list.column('Name', width=470)
         file_list.column('PathOut', width=450)
         file_list.column('Status', width=55)
-        file_list.heading('Name', text='Файлы', anchor='w')
-        file_list.heading('PathOut', text='Папка вывода', anchor='w')
-        file_list.heading('Status', text='Статус', anchor='w')
+        file_list.heading('Name', text='Files', anchor='w')
+        file_list.heading('PathOut', text='Output folder', anchor='w')
+        file_list.heading('Status', text='Status', anchor='w')
         file_list['displaycolumns'] = ('Name', 'PathOut', 'Status')
 
         # Привязки событий
@@ -977,10 +974,10 @@ class App(TkinterDnD.Tk):
         self.load_data_into_treeview(file_list, tab_num)
 
         # Кнопки
-        bt_inp = ttk.Button(tab, text='Добавить файлы', command=lambda: self.f_inp(file_list, tab_num))
+        bt_inp = ttk.Button(tab, text='Add files', command=lambda: self.f_inp(file_list, tab_num))
         bt_inp.grid(row=0, column=0, padx=(10, 0), pady=(15, 2), sticky="w")
 
-        bt_out = ttk.Button(tab, text='Выбрать папку вывода', command=lambda: self.f_out(file_list))
+        bt_out = ttk.Button(tab, text='Choose output folder', command=lambda: self.f_out(file_list))
         bt_out.grid(row=0, column=2, padx=(10, 10), pady=(10, 2), sticky="e")
 
         # Аудио, субтитры, информация
@@ -990,7 +987,7 @@ class App(TkinterDnD.Tk):
         widgets_frame = self.create_widgets_frame(tab, file_list)
   
     def create_audio_frame(self, tab):
-        a_frame = ttk.LabelFrame(tab, text='Аудиодорожки')
+        a_frame = ttk.LabelFrame(tab, text='Audio')
         a_frame.grid(row=2, column=2, columnspan=1, padx=5, pady=(2, 10), sticky="nsew")
         a_canvas = tk.Canvas(a_frame)
         a_canvas.pack(side="left", fill="both", expand=True)
@@ -1003,7 +1000,7 @@ class App(TkinterDnD.Tk):
         return audio_frame
 
     def create_sub_frame(self, tab):
-        s_frame = ttk.LabelFrame(tab, text='Субтитры')
+        s_frame = ttk.LabelFrame(tab, text='Subtitles')
         s_frame.grid(row=3, column=2, columnspan=1, padx=5, pady=(2, 10), sticky="nsew")
         s_canvas = tk.Canvas(s_frame)
         s_canvas.pack(side="left", fill="both", expand=True)
@@ -1016,7 +1013,7 @@ class App(TkinterDnD.Tk):
         return sub_frame
 
     def create_info_frame(self, tab):
-        info_frame = ttk.LabelFrame(tab, text='Видеодорожка')
+        info_frame = ttk.LabelFrame(tab, text='Video')
         info_frame.grid(row=1, column=2, columnspan=1, padx=5, pady=(2, 10), sticky="nsew")
         info_text = ttk.Label(info_frame, text='', width=12, anchor='w', justify='left')
         info_text.pack(expand=True, fill="both", side=tk.LEFT, padx=(10, 0), pady=(5, 10))
@@ -1029,15 +1026,14 @@ class App(TkinterDnD.Tk):
         bt_cut = ttk.Button(widgets_frame, text='CUT', width=6, command=lambda: self.run_media_player(file_list, widgets_frame))
         bt_cut.pack(expand=True, fill="both", side=tk.LEFT, padx=(0, 5), pady=(5, 15))
         
-        lb_in_text = ttk.Label(widgets_frame, text='Обрезать от:', width=11, anchor='w', justify='left')
+        lb_in_text = ttk.Label(widgets_frame, text='cut from:', width=11, anchor='w', justify='left')
         lb_in_text.pack(expand=True, fill="both", side=tk.LEFT, padx=(5, 0), pady=(5, 15))
 
         lb_in = ttk.Entry(widgets_frame, justify='left', width=11)
         lb_in.pack(expand=True, fill="both", side=tk.LEFT, padx=(0, 5), pady=(5, 15))
         lb_in.bind("<Return>", lambda e: self.update_entry(e, file_list, widgets_frame))
 
-        # До
-        lb_out_text = ttk.Label(widgets_frame, text='до:', width=4, anchor='e', justify='left')
+        lb_out_text = ttk.Label(widgets_frame, text='to:', width=4, anchor='e', justify='left')
         lb_out_text.pack(expand=True, fill="both", side=tk.LEFT, padx=(0, 5), pady=(5, 15))
 
         lb_out = ttk.Entry(widgets_frame, justify='left', width=11)
@@ -1076,7 +1072,7 @@ class App(TkinterDnD.Tk):
         lb_kor.pack(expand=True, fill="both", side=tk.LEFT, padx=(0, 5), pady=(5, 15))
 
         # Пресет
-        preset_text = ttk.Label(widgets_frame, text='Пресет:', width=9, anchor='e', justify='left')
+        preset_text = ttk.Label(widgets_frame, text='Preset:', width=9, anchor='e', justify='left')
         preset_text.pack(expand=True, fill="both", side=tk.LEFT, padx=(0, 5), pady=(5, 15))
 
         preset_combobox = ttk.Combobox(widgets_frame, values=["10 Mbps", "6 Mbps", "COPY", "AAC", "SRT"], width=8)
@@ -1084,7 +1080,7 @@ class App(TkinterDnD.Tk):
         preset_combobox.bind("<<ComboboxSelected>>", lambda e: self.update_entry(e, file_list, widgets_frame))
 
         # Запустить
-        bt_run2 = ttk.Button(widgets_frame, text='Запустить', command=lambda: self.run(file_list, widgets_frame), style="Accent.TButton")
+        bt_run2 = ttk.Button(widgets_frame, text='Start', command=lambda: self.run(file_list, widgets_frame), style="Accent.TButton")
         bt_run2.pack(expand=True, fill="both", side=tk.LEFT, padx=(20, 0), pady=(5, 15))
         bt_run2.config(state='normal')
         self.run(file_list, widgets_frame)
