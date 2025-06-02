@@ -1,6 +1,6 @@
 # FFbroadcastConverter
 
-![FFmpeg Logo](https://ffmpeg.org/ffmpeg-logo.svg)
+![FFmpeg Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/FFmpeg-Logo.svg/330px-FFmpeg-Logo.svg.png)
 
 ## Overview
 
