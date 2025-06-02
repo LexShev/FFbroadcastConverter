@@ -99,7 +99,6 @@ def extract_normalization_data(id, file_name, audio_file):
         ]
         output = subprocess.check_output(command, stderr=subprocess.STDOUT, universal_newlines=True, encoding='utf-8')
         output_lines = output.strip().split("\n")
-        print(output_lines)
         normalization_data = parse_loudnorm_output(id, file_name, output_lines)
         return normalization_data
     except subprocess.CalledProcessError as e:

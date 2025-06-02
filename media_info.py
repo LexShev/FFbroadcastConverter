@@ -1,4 +1,3 @@
-# pip install ffmpeg-python
 import ffmpeg
 import sqlite3
 import os
@@ -18,7 +17,6 @@ def format_duration(duration):
     minutes = int((duration % 3600) // 60)
     seconds = duration % 60
     return f"{hours:02}:{minutes:02}:{seconds:06.3f}"
-
 
 def insert_media_info(db_path, file_path, tab):
     """Вставить информацию о медиафайле и дорожках в базу данных."""
