@@ -1,6 +1,7 @@
 # FFbroadcastConverter
 
-![FFmpeg Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/FFmpeg-Logo.svg/330px-FFmpeg-Logo.svg.png)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white)
 
 ## Overview
 
